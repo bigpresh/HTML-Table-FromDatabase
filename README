@@ -1,0 +1,54 @@
+HTML-Table-FromDatabase
+
+Subclasses L<HTML::Table>, providing a quick and easy way to produce HTML
+tables from the result of a database query.
+
+I often find myself writing scripts which fetch data from a database and
+present it in a HTML table; often resulting in pointlessly repeated code
+to take the results and turn them into a table.
+
+HTML::Table itself helps here, but this module makes it even simpler.
+
+Row headings are taken from the field names returned by the query.
+
+All options you pass to the constructor will be passed through to HTML::Table,
+so you can use all the usual HTML::Table features.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc HTML::Table::FromDatabase
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-Table-FromDatabase
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/HTML-Table-FromDatabase
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/HTML-Table-FromDatabase
+
+    Search CPAN
+        http://search.cpan.org/dist/HTML-Table-FromDatabase
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2008 David Precious
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+

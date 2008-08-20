@@ -1,0 +1,19 @@
+use strict;
+use warnings;
+use ExtUtils::MakeMaker;
+
+WriteMakefile(
+    NAME                => 'HTML::Table::FromDatabase',
+    AUTHOR              => 'David Precious <davidp@preshweb.co.uk>',
+    VERSION_FROM        => 'lib/HTML/Table/FromDBIHandle.pm',
+    ABSTRACT_FROM       => 'lib/HTML/Table/FromDBIHandle.pm',
+    PL_FILES            => {},
+    PREREQ_PM => {
+        'HTML::Table' => 0,
+    },
+    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean               => { FILES => 'HTML-Table-FromDatabase-*' },
+
+    # include the LICENSE param, as long as EU::MM is new enough to support it:
+    ($ExtUtils::MakeMaker::VERSION >= 6.3002 ? (LICENSE => "perl") : () ),
+);
