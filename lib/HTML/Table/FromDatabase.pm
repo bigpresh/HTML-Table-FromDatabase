@@ -39,6 +39,17 @@ Row headings are taken from the field names returned by the query.
 All options you pass to the constructor will be passed through to HTML::Table,
 so you can use all the usual HTML::Table features.
 
+
+=head1 INTERFACE
+
+=over 4
+
+=item new
+
+Constructor method - consult L<HTML::Table>'s documentation, the only
+difference here is the addition of the required I<-sth> parameter which
+should be a DBI statement handle.
+
 =cut
 
 sub new {
@@ -73,6 +84,8 @@ sub new {
 
 1;
 __END__;
+
+=back
 
 =head1 AUTHOR
 
