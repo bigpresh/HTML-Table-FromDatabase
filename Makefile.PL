@@ -5,8 +5,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => 'HTML::Table::FromDatabase',
     AUTHOR              => 'David Precious <davidp@preshweb.co.uk>',
-    VERSION_FROM        => 'lib/HTML/Table/FromDBIHandle.pm',
-    ABSTRACT_FROM       => 'lib/HTML/Table/FromDBIHandle.pm',
+    VERSION_FROM        => 'lib/HTML/Table/FromDatabase.pm',
+    ABSTRACT_FROM       => 'lib/HTML/Table/FromDatabase.pm',
     PL_FILES            => {},
     PREREQ_PM => {
         'HTML::Table' => 0,
