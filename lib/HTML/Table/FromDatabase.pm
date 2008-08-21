@@ -4,8 +4,8 @@ use HTML::Table;
 use 5.005000;
 use strict;
 use base qw(HTML::Table);
-
-our $VERSION = '0.01';
+use vars qw($VERSION);
+$VERSION = '0.01';
 
 # $Id$
 
