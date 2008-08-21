@@ -34,7 +34,7 @@ to take the results and turn them into a table.
 
 HTML::Table itself helps here, but this module makes it even simpler.
 
-Row headings are taken from the field names returned by the query.
+Column headings are taken from the field names returned by the query.
 
 All options you pass to the constructor will be passed through to HTML::Table,
 so you can use all the usual HTML::Table features.
