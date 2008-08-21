@@ -1,5 +1,9 @@
 Revision history for HTML-Table-FromDatabase
 
+0.02    2008-08-21
+        Add ability to provide callbacks to modify data on the fly
+        as the table is being constructed.
+
 0.01    2008-08-20
         First version, released on an unsuspecting world.
 

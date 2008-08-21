@@ -5,7 +5,7 @@ use 5.005000;
 use strict;
 use base qw(HTML::Table);
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 # $Id$
 
