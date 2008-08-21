@@ -56,15 +56,23 @@ sub new {
     my $class = shift;
     
     my %flags = @_;
-    my $self = HTML::Table->new(@_);
+    my $sth = delete $flags{-sth};
     
-    
-    my $sth = $flags{-sth};
     if (!$sth || !ref $sth || !$sth->isa('DBI::st')) {
         warn "HTML::Table::FromDatabase->new requires the -sth argument,"
             ." which must be a valid DBI statement handle.";
         return;
     }
+
+    my $callbacks = delete $flags{-callbacks};
+    if ($callbacks && ref $callbacks ne 'ARRAY') {
+        warn "Unrecognised -callbacks parameter; "
+            ."expected a arrayref of hashrefs";
+        return;
+    }
+    # Create a HTML::Table object, passing along any other options we were
+    # given:
+    my $self = HTML::Table->new(%flags);
     
     # Find the names;
     my @columns = @{ $sth->{NAME} };
@@ -73,14 +81,84 @@ sub new {
     $self->setSectionRowHead('thead', 0, 1);
     
     # Add all the rows:
-    while (my @data = $sth->fetchrow_array) {
-        $self->addRow(@data);
+    while (my $row = $sth->fetchrow_hashref) {
+        my @fields;
+        for my $column (@columns) {
+            my $value = $row->{$column};
+
+            # If we have a callbck to perform for this field, do it:
+            for my $callback (@$callbacks) {
+                # See what we need to match against, and if it matches, call
+                # the specified transform callback to potentially change the
+                # value.
+                if (exists $callback->{column}) {
+                    if (_callback_matches($callback->{column}, $column)) {
+                        $value = _perform_callback($callback, $column, $value);
+                    }
+                }
+                if (exists $callback->{value}) {
+                    if (_callback_matches($callback->{value}, $value)) {
+                        $value = _perform_callback($callback, $column, $value);
+                    }
+                }
+            }
+            
+            # Add this field to the list to deal with:
+            push @fields, $value;
+        }
+        
+        $self->addRow(@fields);
     }
     
     # All done, re-bless into our class and return
     bless $self, $class;
     return $self;
 };
+
+# Abstract out the different kind of matches (regexp, coderef or straight
+# scalar)
+sub _callback_matches {
+    my ($match, $against) = @_;
+    if (ref $match eq 'Regexp') {
+        return $against =~ /$match/;
+    } elsif (ref $match eq 'CODE') {
+        return $match->($against);
+    } elsif (ref $match) {
+        # A reference to something we don't understand:
+        warn "Unrecognised callback match [$match]";
+        return;
+    } else {
+        # Must be a straight scalar
+        return $match eq $against;
+    }
+}
+
+# A callback spec matched, so perform any callback it requests, and apply
+# any transformation it described:
+sub _perform_callback {
+    my ($callback, $column, $value) = @_;
+
+    # Firstly, if there's a callback to perform, we call it (but don't
+    # care what it returns):
+    if (exists $callback->{callback} and ref $callback->{callback} eq 'CODE')
+    {
+        $callback->{callback}->($value, $column);
+    }
+
+    # Now, look for a transformation we might have to perform:
+    if (!exists $callback->{transform}) {
+        # We don't have a transform to perform, so just return the value
+        # unchanged:
+        return $value;
+    }
+    if (ref $callback->{transform} ne 'CODE') {
+        warn "Unrecognised transform action";
+        return $value;
+    }
+
+    # OK, apply the transformation to the value:
+    return $callback->{transform}->($value);
+}
 
 1;
 __END__;
