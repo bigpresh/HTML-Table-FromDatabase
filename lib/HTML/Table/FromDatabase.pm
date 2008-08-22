@@ -197,7 +197,7 @@ Another example - displaying all numbers to two decimal points:
     -sth => $sth,
     -callbacks => [
         {
-            value => qr/\d+/,
+            value => qr/^\d+$/,
             transform => sub { return sprintf '%.2f', shift },
         },
     ],
@@ -206,6 +206,7 @@ Another example - displaying all numbers to two decimal points:
 It is hoped that this facility will allow the easyness of quickly creating
 a table to still be retained, even when you need to do things with the data
 rather than just displaying it exactly as it comes out of the database.
+
 =head1 AUTHOR
 
 David Precious, E<lt>davidp@preshweb.co.ukE<gt>
