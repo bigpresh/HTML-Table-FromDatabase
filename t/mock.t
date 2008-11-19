@@ -17,16 +17,12 @@ plan tests => 10;
 
 # Easy test: get a mock statement handle, and check we can make a table:
 my $mock = mocked_sth();
-
-
 my $table = HTML::Table::FromDatabase->new( -sth => $mock );
-
 ok($table, 'Seemed to get a table back');
 isa_ok($table, 'HTML::Table', 'We got something that ISA HTML::Table');
 my $html = $table->getTable;
-warn $html;
-ok($html =~ m{<th>Col1</th>}, 'Table contains one of the known column names');
-ok($html =~ m{<td>R1C1</td>}, 'Table contains a known field value');
+like($html, qr{<th>Col1</th>}, 'Table contains one of the known column names');
+like($html, qr{<td>R1C1</td>}, 'Table contains a known field value');
 
 # now, test transformations:
 $mock = mocked_sth();
