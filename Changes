@@ -1,5 +1,9 @@
 Revision history for HTML-Table-FromDatabase
 
+0.03    2008-11-19
+        Add -html option, to allow HTML fetched from the database to be
+        automatically stripped or encoded.
+
 0.02    2008-08-21
         Add ability to provide callbacks to modify data on the fly
         as the table is being constructed.

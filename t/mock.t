@@ -13,7 +13,7 @@ plan skip_all => "Test::MockObject required for mock testing"
     if $@;
 
 # OK, we've got Test::MockObject, so we can go ahead:
-plan tests => 7;
+plan tests => 10;
 
 # Easy test: get a mock statement handle, and check we can make a table:
 my $mock = mocked_sth();
@@ -49,11 +49,25 @@ $table = HTML::Table::FromDatabase->new(
 );
 $html = $table->getTable;
 warn $html;
-ok($html =~ m{<td>RE_T</td><td>RE_T</td>},
+like($html, qr{<td>RE_T</td><td>RE_T</td>},
     'Callback regexp-matching column transformed OK');
-ok($html =~ m{<td>Plain_T</td>},
+like($html, qr{<td>Plain_T</td>},
     'Callback plain-matching column transformed OK');
-ok($html =~ m{<td>value_T</td>}, 'Callback matching cell value transform OK');
+like($html, qr{<td>value_T</td>}, 'Callback matching cell value transform OK');
+
+
+# check that HTML is stripped/encoded properly
+$mock = mocked_sth();
+$table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'strip');
+$html = $table->getTable;
+like(  $html, qr{<td>HTML</td>}, 'HTML stripped correctly');
+unlike($html, qr{evilscript},    'Scripts removed correctly');
+
+# Check that HTML is encoded properly:
+$mock = mocked_sth();
+$table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'escape');
+$html = $table->getTable;
+like($html, qr{<td>&lt;p&gt;HTML&lt;/p&gt;</td>}, 'HTML encoded correctly');
 
 
 # Returns a make-believe statement handle, which should behave just like
@@ -71,5 +85,11 @@ sub mocked_sth {
         { Col1 => 'R1C1', Col2 => 'R1C2', Col3 => 'R1C3', Col4 => 'R1C4' },
         { Col1 => 'R2C1', Col2 => 'R2C2', Col3 => 'R2C3', Col4 => 'R2C4' },
         { Col1 => 'R3C1', Col2 => 'R3C2', Col3 => 'R3C3', Col4 => 'R3C4' },
+        {
+            Col1 => '<p>HTML</p>',
+            Col2 => '<div align="center">R3C2</div>',
+            Col3 => '<script>evilscript</script>',
+            Col4 => 'R3C4',
+        },
     );
 }

@@ -5,7 +5,7 @@ use 5.005000;
 use strict;
 use base qw(HTML::Table);
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 # $Id$
 
@@ -47,10 +47,26 @@ so you can use all the usual HTML::Table features.
 =item new
 
 Constructor method - consult L<HTML::Table>'s documentation, the only
-difference here is the addition of the required I<-sth> parameter which
-should be a DBI statement handle, and the optional I<-callbacks> parameter
-which specifies callbacks/transformations which should be applied as the
+difference here is the addition of the following parameters:
+
+=over 4
+
+=item I<-sth>
+
+(required) a DBI statement handle which has been executed and is ready
+to fetch data from
+
+=item I<-callbacks>
+
+(optional) specifies callbacks/transformations which should be applied as the
 table is built up (see the callbacks section below).
+
+=item I<-html>
+
+(optional) can be I<escape> or I<strip> if you want HTML to be escaped
+(angle brackets replaced with &lt; and &gt;) or stripped out with HTML::Strip.
+
+=back
 
 =cut
 
@@ -72,6 +88,27 @@ sub new {
             ."expected a arrayref of hashrefs";
         return;
     }
+
+    # if we're going to encode or escape HTML, prepare to do so:
+    my $preprocessor;
+    if (my $handle_html = delete $flags{-html}) {
+        if ($handle_html eq 'strip') {
+            eval "require HTML::Strip;";
+            if ($@) {
+                warn "Failed to load HTML::Strip - cannot strip HTML";
+                return;
+            }
+            my $hs = new HTML::Strip;
+            $preprocessor = sub { $hs->eof; return $hs->parse(shift) };
+        } elsif ($handle_html eq 'encode' || $handle_html eq 'escape') {
+            eval "require CGI;";
+            $preprocessor = sub { CGI::escapeHTML(shift); };
+        } else {
+            warn "Unrecognised -html option.";
+            return;
+        }
+    }
+    
     # Create a HTML::Table object, passing along any other options we were
     # given:
     my $self = HTML::Table->new(%flags);
@@ -87,6 +124,10 @@ sub new {
         my @fields;
         for my $column (@columns) {
             my $value = $row->{$column};
+
+            if ($preprocessor) {
+                $value = $preprocessor->($value);
+            }
 
             # If we have a callbck to perform for this field, do it:
             for my $callback (@$callbacks) {
