@@ -248,6 +248,18 @@ It is hoped that this facility will allow the easyness of quickly creating
 a table to still be retained, even when you need to do things with the data
 rather than just displaying it exactly as it comes out of the database.
 
+
+=head1 DEPENDENCIES
+
+L<HTML::Table>, obviously :)
+
+L<HTML::Strip> is required if you use the -html => 'strip' option.
+
+L<CGI> will be used to encode HTML (this may change in future versions, as
+loading a module as big as CGI.pm simply to HTML-encode text seems akin
+to using a tactictal nuclear weapon to dig a hole.
+
+
 =head1 AUTHOR
 
 David Precious, E<lt>davidp@preshweb.co.ukE<gt>
