@@ -52,12 +52,18 @@ like($html, qr{<td>Plain_T</td>},
 like($html, qr{<td>value_T</td>}, 'Callback matching cell value transform OK');
 
 
-# check that HTML is stripped/encoded properly
-$mock = mocked_sth();
-$table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'strip');
-$html = $table->getTable;
-like(  $html, qr{<td>HTML</td>}, 'HTML stripped correctly');
-unlike($html, qr{evilscript},    'Scripts removed correctly');
+# We can only test HTML stripping if HTML::Strip is available.
+SKIP: {
+    eval { require "HTML::Strip"; };
+    skip "HTML::Strip not installed", 2 if $@;
+    
+    # check that HTML is stripped/encoded properly
+    $mock = mocked_sth();
+    $table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'strip');
+    $html = $table->getTable;
+    like(  $html, qr{<td>HTML</td>}, 'HTML stripped correctly');
+    unlike($html, qr{evilscript},    'Scripts removed correctly');
+}
 
 # Check that HTML is encoded properly:
 $mock = mocked_sth();
