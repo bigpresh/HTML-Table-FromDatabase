@@ -82,7 +82,6 @@ sub mocked_sth {
     # Make it behave as we'd expect:
     $mock->{NAME} = [ qw(Col1 Col2 Col3 Col4) ];
     
-    #$mock->mock('fetchrow_hashref', sub { pop @{ shift->{_test_rows} } });
     $mock->set_series('fetchrow_hashref', 
         { Col1 => 'R1C1', Col2 => 'R1C2', Col3 => 'R1C3', Col4 => 'R1C4' },
         { Col1 => 'R2C1', Col2 => 'R2C2', Col3 => 'R2C3', Col4 => 'R2C4' },
