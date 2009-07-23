@@ -1,5 +1,12 @@
 Revision history for HTML-Table-FromDatabase
 
+0.04    2009-07-23
+        Add -override_headers and -rename_headers options, to allow the table
+        headings to be customised easily.
+        Pass the row hashref to callbacks, in case they need to look at the rest
+        of the row in order to apply their transformation properly (this should
+        not break existing code).
+
 0.03    2008-11-19
         Add -html option, to allow HTML fetched from the database to be
         automatically stripped or encoded.
