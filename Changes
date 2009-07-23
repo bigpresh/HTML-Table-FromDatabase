@@ -1,5 +1,10 @@
 Revision history for HTML-Table-FromDatabase
 
+0.05    2009-07-23
+        Add -auto_links option, to turn URLs in data into links.
+        Improve documentation, including the new -override_headers &
+        -rename_headers options added earlier.
+
 0.04    2009-07-23
         Add -override_headers and -rename_headers options, to allow the table
         headings to be customised easily.

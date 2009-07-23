@@ -1,10 +1,12 @@
 package HTML::Table::FromDatabase;
 
-use HTML::Table;
 use 5.005000;
 use strict;
 use base qw(HTML::Table);
 use vars qw($VERSION);
+use HTML::Table;
+use Regexp::Common qw(URI);
+
 $VERSION = '0.05';
 
 # $Id$
@@ -81,6 +83,10 @@ of the column names returned by the query when generating the table headings.
 
 =back
 
+=item C<-auto_links>
+
+(optional) Look for URLs within the data, and make them clickable links.
+
 =cut
 
 sub new {
@@ -115,6 +121,8 @@ sub new {
             ."expected a hashref";
         return;
     }
+
+    my $auto_links = delete $flags{-auto_links};
 
     # if we're going to encode or escape HTML, prepare to do so:
     my $preprocessor;
@@ -172,7 +180,14 @@ sub new {
                 $value = $preprocessor->($value);
             }
 
-            # If we have a callbck to perform for this field, do it:
+            # If we're automatically finding links, do so:
+            if ($auto_links) {
+                if (my ($url) = $value =~ /$RE{URI}{-keep}/) {
+                    $value = qq[<a href="$url">$url</a>];
+                }
+            }
+
+            # If we have a callback to perform for this field, do it:
             for my $callback (@$callbacks) {
                 # See what we need to match against, and if it matches, call
                 # the specified transform callback to potentially change the
@@ -320,7 +335,7 @@ report.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008 by David Precious
+Copyright (C) 2008-2009 by David Precious
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.7 or,
