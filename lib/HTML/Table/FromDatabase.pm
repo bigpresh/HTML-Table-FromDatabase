@@ -5,7 +5,6 @@ use strict;
 use base qw(HTML::Table);
 use vars qw($VERSION);
 use HTML::Table;
-use Regexp::Common qw(URI);
 
 $VERSION = '0.05';
 
@@ -34,13 +33,13 @@ I often find myself writing scripts which fetch data from a database and
 present it in a HTML table; often resulting in pointlessly repeated code
 to take the results and turn them into a table.
 
-HTML::Table itself helps here, but this module makes it even simpler.
+L<HTML::Table> itself helps here, but this module makes it even simpler.
 
 Column headings are taken from the field names returned by the query, unless
 overridden with the I<-override_headers> or I<-rename_headers> options.
 
 All options you pass to the constructor will be passed through to HTML::Table,
-so you can use all the usual HTML::Table features.
+so you can use all the usual L<HTML::Table> features.
 
 
 =head1 INTERFACE
@@ -83,10 +82,6 @@ of the column names returned by the query when generating the table headings.
 
 =back
 
-=item C<-auto_links>
-
-(optional) Look for URLs within the data, and make them clickable links.
-
 =cut
 
 sub new {
@@ -122,7 +117,6 @@ sub new {
         return;
     }
 
-    my $auto_links = delete $flags{-auto_links};
 
     # if we're going to encode or escape HTML, prepare to do so:
     my $preprocessor;
@@ -180,12 +174,6 @@ sub new {
                 $value = $preprocessor->($value);
             }
 
-            # If we're automatically finding links, do so:
-            if ($auto_links) {
-                if (my ($url) = $value =~ /$RE{URI}{-keep}/) {
-                    $value = qq[<a href="$url">$url</a>];
-                }
-            }
 
             # If we have a callback to perform for this field, do it:
             for my $callback (@$callbacks) {
@@ -292,8 +280,8 @@ a column which contains URLs into clickable links:
     ],
  );
 
-You can match against the column name using a key named column in the hashref
-(as illustrated above) or against the actual value using a key named value.
+You can match against the column name using a key named C<column> in the hashref
+(as illustrated above) or against the actual value using a key named C<value>.
 
 You can pass a straight scalar to compare against, a regex (using qr//), or
 a coderef which will be executed to determine if it matches.
@@ -310,7 +298,7 @@ Another example - displaying all numbers to two decimal points:
     ],
  );
 
-It is hoped that this facility will allow the easyness of quickly creating
+It is hoped that this facility will allow the easiness of quickly creating
 a table to still be retained, even when you need to do things with the data
 rather than just displaying it exactly as it comes out of the database.
 
@@ -319,11 +307,11 @@ rather than just displaying it exactly as it comes out of the database.
 
 L<HTML::Table>, obviously :)
 
-L<HTML::Strip> is required if you use the -html => 'strip' option.
+L<HTML::Strip> is required if you use the C<-html => 'strip'> option.
 
-L<CGI> will be used to encode HTML (this may change in future versions, as
-loading a module as big as CGI.pm simply to HTML-encode text seems akin
-to using a tactictal nuclear weapon to dig a hole.
+L<CGI> if you use the C<-html => 'encode'> option (this may change in future 
+versions, as loading a module as big as CGI.pm simply to HTML-encode text 
+seems akin to using a tactictal nuclear weapon to dig a hole).
 
 
 =head1 AUTHOR

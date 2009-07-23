@@ -11,7 +11,6 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'HTML::Table' => 0,
-        'Regexp::Common' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'HTML-Table-FromDatabase-*' },
