@@ -52,29 +52,29 @@ difference here is the addition of the following parameters:
 
 =over 4
 
-=item I<-sth>
+=item C<-sth>
 
 (required) a DBI statement handle which has been executed and is ready
 to fetch data from
 
-=item I<-callbacks>
+=item C<-callbacks>
 
 (optional) specifies callbacks/transformations which should be applied as the
 table is built up (see the callbacks section below).
 
-=item I<-html>
+=item C<-html>
 
 (optional) can be I<escape> or I<strip> if you want HTML to be escaped
 (angle brackets replaced with &lt; and &gt;) or stripped out with HTML::Strip.
 
-=item I<-override_headers>
+=item C<-override_headers>
 
 (optional) provide a list of names to be used as the column headings, instead of
 using the names of the columns returned by the SQL query.  This should be an
 arrayref containing the heading names, and the number of heading names must
 match the number of columns returned by the query.
 
-=item I<-rename_headers>
+=item C<-rename_headers>
 
 (optional) provide a hashref of oldname => newname pairs to rename some or all
 of the column names returned by the query when generating the table headings.
