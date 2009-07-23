@@ -5,7 +5,7 @@ use 5.005000;
 use strict;
 use base qw(HTML::Table);
 use vars qw($VERSION);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 # $Id$
 
@@ -34,7 +34,8 @@ to take the results and turn them into a table.
 
 HTML::Table itself helps here, but this module makes it even simpler.
 
-Column headings are taken from the field names returned by the query.
+Column headings are taken from the field names returned by the query, unless
+overridden with the I<-override_headers> or I<-rename_headers> options.
 
 All options you pass to the constructor will be passed through to HTML::Table,
 so you can use all the usual HTML::Table features.
@@ -65,6 +66,18 @@ table is built up (see the callbacks section below).
 
 (optional) can be I<escape> or I<strip> if you want HTML to be escaped
 (angle brackets replaced with &lt; and &gt;) or stripped out with HTML::Strip.
+
+=item I<-override_headers>
+
+(optional) provide a list of names to be used as the column headings, instead of
+using the names of the columns returned by the SQL query.  This should be an
+arrayref containing the heading names, and the number of heading names must
+match the number of columns returned by the query.
+
+=item I<-rename_headers>
+
+(optional) provide a hashref of oldname => newname pairs to rename some or all
+of the column names returned by the query when generating the table headings.
 
 =back
 
@@ -139,6 +152,10 @@ sub new {
         }
     }
     if ($override_headers) {
+        if (@$override_headers != @heading_names) {
+            warn "Incorrect number of header names in -override_headers option"
+                ." - got " . @$override_headers . ", needed " .  @heading_names;
+        }
         @heading_names = @$override_headers;
     }
     
