@@ -6,7 +6,7 @@ use base qw(HTML::Table);
 use vars qw($VERSION);
 use HTML::Table;
 
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 # $Id$
 
@@ -320,6 +320,12 @@ David Precious, E<lt>davidp@preshweb.co.ukE<gt>
 
 Feel free to contact me if you have any comments, suggestions or bugs to
 report.
+
+=head1 THANKS
+
+Thanks to Ireneusz Pluta for reporting bug with -override_headers /
+-rename_headers option and supplying patch in RT ticket #50164.
+
 
 =head1 COPYRIGHT AND LICENSE
 
