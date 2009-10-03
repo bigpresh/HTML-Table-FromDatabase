@@ -13,7 +13,7 @@ plan skip_all => "Test::MockObject required for mock testing"
     if $@;
 
 # OK, we've got Test::MockObject, so we can go ahead:
-plan tests => 10;
+plan tests => 13;
 
 # Easy test: get a mock statement handle, and check we can make a table:
 my $mock = mocked_sth();
@@ -70,6 +70,27 @@ $mock = mocked_sth();
 $table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'escape');
 $html = $table->getTable;
 like($html, qr{<td>&lt;p&gt;HTML&lt;/p&gt;</td>}, 'HTML encoded correctly');
+
+
+# Check that overriding column names works
+# Regression test for bug #50164 reported b Ireneusz Pluta
+$table = HTML::Table::FromDatabase->new(
+    -sth => mocked_sth(),
+    -override_headers => qw(One Two Three Four),
+);
+$html = $table->getTable;
+like($html, qr{<th>One</th>}, 'override_headers' works);
+
+# Check that renaming certain headers works
+$table = HTML::Table::FromDatabase->new(
+    -sth => mocked_sth(),
+    -rename_headers => { Col2 => 'Two' },
+);
+$html = $table->getTable;
+like($html, qr{<th>Two</th>}, 
+    '-rename_headers option renames column headers');
+like ($html, qr{<th>Col3</th>},
+    "-rename_headers option doesn't rename headers it shouldn't");
 
 
 # Returns a make-believe statement handle, which should behave just like
