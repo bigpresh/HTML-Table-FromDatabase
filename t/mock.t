@@ -81,7 +81,7 @@ $table = HTML::Table::FromDatabase->new(
     -override_headers => qw(One Two Three Four),
 );
 $html = $table->getTable;
-like($html, qr{<th>One</th>}, 'override_headers' works);
+like($html, qr{<th>One</th>}, '-override_headers works');
 
 # Check that renaming certain headers works
 $table = HTML::Table::FromDatabase->new(
