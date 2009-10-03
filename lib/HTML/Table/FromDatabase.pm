@@ -161,7 +161,7 @@ sub new {
         @heading_names = @$override_headers;
     }
     
-    $self->addSectionRow('thead', 0, @columns);
+    $self->addSectionRow('thead', 0, @heading_names);
     $self->setSectionRowHead('thead', 0, 1);
     
     # Add all the rows:
