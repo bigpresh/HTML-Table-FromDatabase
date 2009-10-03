@@ -42,7 +42,6 @@ $table = HTML::Table::FromDatabase->new(
     ],
 );
 $html = $table->getTable;
-warn $html;
 like($html, qr{<td>RE_T</td><td>RE_T</td>},
     'Callback regexp-matching column transformed OK');
 like($html, qr{<td>Plain_T</td>},
