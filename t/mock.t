@@ -78,7 +78,7 @@ like($html, qr{<td>&lt;p&gt;HTML&lt;/p&gt;</td>}, 'HTML encoded correctly');
 # Regression test for bug #50164 reported b Ireneusz Pluta
 $table = HTML::Table::FromDatabase->new(
     -sth => mocked_sth(),
-    -override_headers => qw(One Two Three Four),
+    -override_headers => [ qw(One Two Three Four) ],
 );
 $html = $table->getTable;
 like($html, qr{<th>One</th>}, '-override_headers works');
