@@ -16,8 +16,7 @@ plan skip_all => "Test::MockObject required for mock testing"
 plan tests => 13;
 
 # Easy test: get a mock statement handle, and check we can make a table:
-my $mock = mocked_sth();
-my $table = HTML::Table::FromDatabase->new( -sth => $mock );
+my $table = HTML::Table::FromDatabase->new( -sth => mocked_sth() );
 ok($table, 'Seemed to get a table back');
 isa_ok($table, 'HTML::Table', 'We got something that ISA HTML::Table');
 my $html = $table->getTable;
@@ -25,9 +24,8 @@ like($html, qr{<th>Col1</th>}, 'Table contains one of the known column names');
 like($html, qr{<td>R1C1</td>}, 'Table contains a known field value');
 
 # now, test transformations:
-$mock = mocked_sth();
 $table = HTML::Table::FromDatabase->new(
-    -sth => $mock,
+    -sth => mocked_sth(),
     -callbacks => [
         {
             column => qr/Col[12]/,
@@ -58,16 +56,20 @@ SKIP: {
     skip "HTML::Strip not installed", 2 if $@;
     
     # check that HTML is stripped/encoded properly
-    $mock = mocked_sth();
-    $table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'strip');
+    $table = HTML::Table::FromDatabase->new(
+        -sth  => mocked_sth(),
+        -html => 'strip',
+    );
     $html = $table->getTable;
     like(  $html, qr{<td>HTML</td>}, 'HTML stripped correctly');
     unlike($html, qr{evilscript},    'Scripts removed correctly');
 }
 
 # Check that HTML is encoded properly:
-$mock = mocked_sth();
-$table = HTML::Table::FromDatabase->new(-sth => $mock, -html => 'escape');
+$table = HTML::Table::FromDatabase->new(
+    -sth  => mocked_sth(),
+    -html => 'escape',
+);
 $html = $table->getTable;
 like($html, qr{<td>&lt;p&gt;HTML&lt;/p&gt;</td>}, 'HTML encoded correctly');
 
