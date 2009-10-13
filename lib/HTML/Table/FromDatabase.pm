@@ -12,8 +12,7 @@ $VERSION = '0.06';
 
 =head1 NAME
 
-HTML::Table::FromDatabase - subclass of HTML::Table to generate tables
-easily from a database query
+HTML::Table::FromDatabase - a subclass of HTML::Table to easily generate a HTML table from the result of a database query
 
 =head1 SYNOPSIS
 
