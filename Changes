@@ -1,5 +1,9 @@
 Revision history for HTML-Table-FromDatabase
 
+0.07    2010-01-29
+        Very minor release, finally applying patch kindly provided in RT ticket
+        #51752 by by Frank Wiegand - thanks Frank!
+
 0.06    2009-10-03
         Make the -override_headers and -rename_headers options work by applying
         patch supplied by Ireneusz Pluta in RT ticket #50164.

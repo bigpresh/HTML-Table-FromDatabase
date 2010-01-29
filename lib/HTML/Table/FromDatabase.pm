@@ -6,7 +6,7 @@ use base qw(HTML::Table);
 use vars qw($VERSION);
 use HTML::Table;
 
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 # $Id$
 
@@ -306,9 +306,9 @@ rather than just displaying it exactly as it comes out of the database.
 
 L<HTML::Table>, obviously :)
 
-L<HTML::Strip> is required if you use the C<-html => 'strip'> option.
+L<HTML::Strip> is required if you use the C<< -html => 'strip' >> option.
 
-L<CGI> if you use the C<-html => 'encode'> option (this may change in future 
+L<CGI> if you use the C<< -html => 'encode' >> option (this may change in future 
 versions, as loading a module as big as CGI.pm simply to HTML-encode text 
 seems akin to using a tactictal nuclear weapon to dig a hole).
 
