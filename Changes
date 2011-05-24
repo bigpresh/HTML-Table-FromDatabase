@@ -1,5 +1,12 @@
 Revision history for HTML-Table-FromDatabase
 
+1.00    2011-05-24
+        Add new -row_callbacks feature - allows you to define callbacks which
+        are called once per row, given the hashref of row data which they may
+        modify if required.
+        Large version bump for the advantage of anyone who considers 0.xx
+        software unready for production usage.
+
 0.07    2010-01-29
         Very minor release, finally applying patch kindly provided in RT ticket
         #51752 by by Frank Wiegand - thanks Frank!
