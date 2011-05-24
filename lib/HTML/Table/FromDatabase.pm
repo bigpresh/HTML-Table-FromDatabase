@@ -259,6 +259,8 @@ __END__;
 
 =head1 CALLBACKS
 
+=head2 Per-cell callbacks
+
 You can pass an arrayref of hashrefs describing callbacks to be performed as
 the table is built up, which can modify the data before the table is produced.
 
@@ -284,6 +286,11 @@ You can match against the column name using a key named C<column> in the hashref
 
 You can pass a straight scalar to compare against, a regex (using qr//), or
 a coderef which will be executed to determine if it matches.
+
+You pass a coderef to be called for matching cells via the C<transform> key.
+You can use C<callback> instead if you want your coderef to be called but its
+return value to be discarded (i.e. you don't intend to modify the value, but do
+something else).
 
 Another example - displaying all numbers to two decimal points:
 
@@ -328,7 +335,7 @@ Thanks to Ireneusz Pluta for reporting bug with -override_headers /
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008-2009 by David Precious
+Copyright (C) 2008-2011 by David Precious
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.7 or,
