@@ -13,7 +13,7 @@ plan skip_all => "Test::MockObject required for mock testing"
     if $@;
 
 # OK, we've got Test::MockObject, so we can go ahead:
-plan tests => 13;
+plan tests => 15;
 
 # Easy test: get a mock statement handle, and check we can make a table:
 my $table = HTML::Table::FromDatabase->new( -sth => mocked_sth() );
@@ -40,6 +40,20 @@ $table = HTML::Table::FromDatabase->new(
             transform => sub { $_ = shift; s/R\dC\d/value_T/; $_ },
         },
     ],
+    -row_callbacks => [
+        sub {
+            my $row = shift;
+            if ($row->{Col1} eq 'Hide') {
+                $row = undef;
+            }
+        },
+        sub {
+            my $row = shift;
+            if ($row->{Col4} eq 'Munge') {
+                $row->{Col4} = 'Munged';
+            }
+        },
+    ],
 );
 $html = $table->getTable;
 like($html, qr{<td>RE_T</td><td>RE_T</td>},
@@ -48,6 +62,8 @@ like($html, qr{<td>Plain_T</td>},
     'Callback plain-matching column transformed OK');
 like($html, qr{<td>value_T</td>}, 'Callback matching cell value transform OK');
 
+like(  $html, qr{<td>Munged</td>}, "row_callback munged row");
+unlike($html, qr{<td>Hide</td>},   "row_callback hid row");
 
 # We can only test HTML stripping if HTML::Strip is available.
 SKIP: {
@@ -114,5 +130,10 @@ sub mocked_sth {
             Col3 => '<script>evilscript</script>',
             Col4 => 'R3C4',
         },
+        # This row will be hidden to test row_callbacks callbacks setting the
+        # row hashref to undef:
+        { Col1 => 'Hide', Col2 => 'R5C2', Col3 => 'R5C3', Col4 => 'R5C4' },
+        # And this row will be changed via a row_callback
+        { Col1 => 'R6C1', Col2 => 'R6C2', Col3 => 'R6C3', Col4 => 'Munge' },
     );
 }
