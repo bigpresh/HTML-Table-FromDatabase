@@ -102,6 +102,13 @@ sub new {
         return;
     }
 
+    my $row_callbacks = delete $flags{-row_callbacks};
+    if ($row_callbacks && ref $row_callbacks ne 'ARRAY') {
+        warn "Unrecognised -row_callbacks parameter; "
+            . "expected an arrayref of coderefs";
+        return;
+    }
+
     my $override_headers = delete $flags{-override_headers};
     if ($override_headers && ref $override_headers ne 'ARRAY') {
         warn "Unrecognised -override_headers parameter; "
@@ -164,7 +171,17 @@ sub new {
     $self->setSectionRowHead('thead', 0, 1);
     
     # Add all the rows:
+    row:
     while (my $row = $sth->fetchrow_hashref) {
+        # First, if there are any row callbacks, call them:
+        for my $callback (@$row_callbacks) {
+            $callback->($row);
+        }
+
+        # If the callback undefined $row, we should skip it:
+        next row if !defined $row;
+
+        # Now, work through each field
         my @fields;
         for my $column (@columns) {
             my $value = $row->{$column};
@@ -307,6 +324,43 @@ Another example - displaying all numbers to two decimal points:
 It is hoped that this facility will allow the easiness of quickly creating
 a table to still be retained, even when you need to do things with the data
 rather than just displaying it exactly as it comes out of the database.
+
+=head2 Per-row callbacks
+
+You can also supply callbacks which operate on an entire row at a time with
+the C<-row_callbacks> option, which simply takes an arrayref of coderefs, each
+of which will be called in turn, will receive the row hashref as its first
+parameter, and can modify the row in whatever way is desired.
+
+  my $table = HTML::Table::FromDatabase->new(
+      -sth => $sth,
+      -row_callbacks => [
+          sub {
+            my $row = shift;
+            # Do things with $row here
+          },
+      ],
+  ):
+
+If a row callback sets the C<$row> hashref to undef, that row will be skipped.
+
+A more in-depth, if somewhat contrived, example:
+
+  my $table = HTML::Table::FromDatabase->new(
+      -sth => $sth,
+      -row_callbacks => [
+          sub {
+            my $row = shift;
+            if ($row->{name} eq 'Bob') {
+                # Hide this row
+                $row = undef;
+            } elsif ($row->{name} eq 'John') {
+                # John likes to be called Jean these days:
+                $row->{name} = 'Jean';
+            }
+          },
+      ],
+  );
 
 
 =head1 DEPENDENCIES
