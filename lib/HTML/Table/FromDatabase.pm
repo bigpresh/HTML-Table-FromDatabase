@@ -60,7 +60,7 @@ to fetch data from
 =item C<-callbacks>
 
 (optional) specifies callbacks/transformations which should be applied as the
-table is built up (see the callbacks section below).
+table is built up (see the L</CALLBACKS> section below).
 
 =item C<-html>
 
