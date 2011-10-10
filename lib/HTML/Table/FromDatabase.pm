@@ -6,7 +6,7 @@ use base qw(HTML::Table);
 use vars qw($VERSION);
 use HTML::Table;
 
-$VERSION = '1.00';
+$VERSION = '1.01';
 
 # $Id$
 
@@ -136,8 +136,12 @@ sub new {
             my $hs = new HTML::Strip;
             $preprocessor = sub { $hs->eof; return $hs->parse(shift) };
         } elsif ($handle_html eq 'encode' || $handle_html eq 'escape') {
-            eval "require CGI;";
-            $preprocessor = sub { CGI::escapeHTML(shift); };
+            eval "require HTML::Entities;";
+            if ($@) {
+                warn "Failed to load HTML::Entities - cannot encode HTML";
+                return;
+            }
+            $preprocessor = sub { HTML::Entities::encode_entities(shift); };
         } else {
             warn "Unrecognised -html option.";
             return;
@@ -369,9 +373,7 @@ L<HTML::Table>, obviously :)
 
 L<HTML::Strip> is required if you use the C<< -html => 'strip' >> option.
 
-L<CGI> if you use the C<< -html => 'encode' >> option (this may change in future 
-versions, as loading a module as big as CGI.pm simply to HTML-encode text 
-seems akin to using a tactictal nuclear weapon to dig a hole).
+L<HTML::Entities> is required if you use the C<< -html => 'encode' >> option.
 
 
 =head1 AUTHOR
