@@ -153,9 +153,7 @@ DEPENDENCIES
 
     HTML::Strip is required if you use the `-html => 'strip'' option.
 
-    CGI if you use the `-html => 'encode'' option (this may change in future
-    versions, as loading a module as big as CGI.pm simply to HTML-encode
-    text seems akin to using a tactictal nuclear weapon to dig a hole).
+    HTML::Entities is required if you use the `-html => 'encode'' option.
 
 AUTHOR
     David Precious, <davidp@preshweb.co.uk>
