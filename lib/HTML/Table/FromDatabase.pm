@@ -215,6 +215,10 @@ sub new {
                     }
                 }
             }
+
+            # If the value is empty, turn it into a non-breaking space to make
+            # the cell still display correctly (otherwise it looks ugly):
+            $value = '&nbsp;' if $value eq '';
             
             # Add this field to the list to deal with:
             push @fields, $value;
