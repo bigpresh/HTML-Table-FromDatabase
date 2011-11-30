@@ -1,5 +1,11 @@
 Revision history for HTML-Table-FromDatabase
 
+1.02    2011-11-30
+        Automatically add '&nbsp;' to empty cells to ensure browsers render them
+        normally, unless the new '-pad_empty_cells' option is set to a false
+        value.  This stops empty cells looking odd with no borders in many
+        browsers.
+
 1.01    2011-10-10
         Use HTML::Entities instead of CGI to encode HTML entities.
 
