@@ -79,6 +79,14 @@ match the number of columns returned by the query.
 (optional) provide a hashref of oldname => newname pairs to rename some or all
 of the column names returned by the query when generating the table headings.
 
+=item C<-pad_empty_cells>
+
+(optional, default 1) pad empty cells with an C<&nbsp;> to ensure they're 
+rendered with borders appropriately.  Many browsers "skip" empty cells, leading 
+to missing borders around them, which many people consider broken.  To stop
+this, by default empty cells receive a non-breaking space as their content.  If
+you don't want this behaviour, set this option to a false value.
+
 =back
 
 =cut
@@ -122,6 +130,8 @@ sub new {
             ."expected a hashref";
         return;
     }
+
+    $flags{-pad_empty_cells} = 1 unless exists $flags{-pad_empty_cells};
 
 
     # if we're going to encode or escape HTML, prepare to do so:
@@ -218,7 +228,7 @@ sub new {
 
             # If the value is empty, turn it into a non-breaking space to make
             # the cell still display correctly (otherwise it looks ugly):
-            $value = '&nbsp;' if $value eq '';
+            $value = '&nbsp;' if $value eq '' && $flags{-pad_empty_cells};
             
             # Add this field to the list to deal with:
             push @fields, $value;
