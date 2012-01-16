@@ -7,7 +7,7 @@ use base qw(HTML::Table);
 use vars qw($VERSION);
 use HTML::Table;
 
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 # $Id$
 

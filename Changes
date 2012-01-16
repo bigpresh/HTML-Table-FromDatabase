@@ -1,5 +1,8 @@
 Revision history for HTML-Table-FromDatabase
 
+1.03    2012-01-16
+        Avoid uninitialised value warnings
+
 1.02    2011-11-30
         Automatically add '&nbsp;' to empty cells to ensure browsers render them
         normally, unless the new '-pad_empty_cells' option is set to a false
