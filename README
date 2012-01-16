@@ -57,6 +57,14 @@ INTERFACE
             rename some or all of the column names returned by the query
             when generating the table headings.
 
+        `-pad_empty_cells'
+            (optional, default 1) pad empty cells with an `&nbsp;' to ensure
+            they're rendered with borders appropriately. Many browsers
+            "skip" empty cells, leading to missing borders around them,
+            which many people consider broken. To stop this, by default
+            empty cells receive a non-breaking space as their content. If
+            you don't want this behaviour, set this option to a false value.
+
 CALLBACKS
   Per-cell callbacks
     You can pass an arrayref of hashrefs describing callbacks to be
