@@ -15,6 +15,14 @@ WriteMakefile(
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'HTML-Table-FromDatabase-*' },
 
+    META_MERGE => {
+        resources => {
+            repository => 'https://github.com/bigpresh/HTML-Table-FromDatabase',
+            bugtracker => 'https://github.com/bigpresh/HTML-Table-FromDatabase/issues',
+            homepage   => 'https://github.com/bigpresh/HTML-Table-FromDatabase/',
+        },
+    },
+
     # include the LICENSE param, as long as EU::MM is new enough to support it:
     ($ExtUtils::MakeMaker::VERSION >= 6.3002 ? (LICENSE => "perl") : () ),
 );
