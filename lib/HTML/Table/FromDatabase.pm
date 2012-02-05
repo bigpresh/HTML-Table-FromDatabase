@@ -80,6 +80,12 @@ match the number of columns returned by the query.
 (optional) provide a hashref of oldname => newname pairs to rename some or all
 of the column names returned by the query when generating the table headings.
 
+=item C<-auto_pretty_headers>
+
+(optional, boolean) - automatically make column names nicer for headings,
+using titlecase and swapping underscores for spaces etc (e.g. C<first_name>
+becomes C<First Name>)
+
 =item C<-pad_empty_cells>
 
 (optional, default 1) pad empty cells with an C<&nbsp;> to ensure they're 
@@ -134,6 +140,8 @@ sub new {
 
     $flags{-pad_empty_cells} = 1 unless exists $flags{-pad_empty_cells};
 
+    my $auto_pretty_headers = delete $flags{-auto_pretty_headers};
+
 
     # if we're going to encode or escape HTML, prepare to do so:
     my $preprocessor;
@@ -167,13 +175,17 @@ sub new {
     my @columns = @{ $sth->{NAME} };
 
     # Default to using the column names as headings, unless we've been given
-    # an -override_headers or -rename_headers option:
+    # an -override_headers or -rename_headers option (if we got the
+    # -auto_pretty_headers option, prettify them somewhat):
     my @heading_names = @columns;
-    if ($rename_headers) {
-        for (@heading_names) {
-            $_ = $rename_headers->{$_} if exists $rename_headers->{$_};
+    for (@heading_names) {
+        if (exists $rename_headers->{$_}) {
+            $_ = $rename_headers->{$_};
+        } elsif ($auto_pretty_headers) {
+            $_ = prettify($_);
         }
     }
+
     if ($override_headers) {
         if (@$override_headers != @heading_names) {
             warn "Incorrect number of header names in -override_headers option"
@@ -286,6 +298,10 @@ sub _perform_callback {
 
     # OK, apply the transformation to the value:
     return $callback->{transform}->($value, $row);
+}
+
+sub prettify {
+    s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
 }
 
 1;
