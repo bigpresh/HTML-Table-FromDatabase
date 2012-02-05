@@ -13,7 +13,7 @@ plan skip_all => "Test::MockObject required for mock testing"
     if $@;
 
 # OK, we've got Test::MockObject, so we can go ahead:
-plan tests => 15;
+plan tests => 17;
 
 # Easy test: get a mock statement handle, and check we can make a table:
 my $table = HTML::Table::FromDatabase->new( -sth => mocked_sth() );
@@ -93,7 +93,7 @@ like($html, qr{<td>&lt;p&gt;HTML&lt;/p&gt;</td>}, 'HTML encoded correctly');
 # Regression test for bug #50164 reported b Ireneusz Pluta
 $table = HTML::Table::FromDatabase->new(
     -sth => mocked_sth(),
-    -override_headers => [ qw(One Two Three Four) ],
+    -override_headers => [ qw(One Two Three Four Foo) ],
 );
 $html = $table->getTable;
 like($html, qr{<th>One</th>}, '-override_headers works');
@@ -108,6 +108,17 @@ like($html, qr{<th>Two</th>},
     '-rename_headers option renames column headers');
 like ($html, qr{<th>Col3</th>},
     "-rename_headers option doesn't rename headers it shouldn't");
+like ($html, qr{<th>foo_bar</th>},
+    "-auto_pretty_headers has no effect if not asked for");
+
+$table = HTML::Table::FromDatabase->new(
+    -sth => mocked_sth(),
+    -auto_pretty_headers => 1,
+);
+$html = $table->getTable;
+
+like($html, qr{<th>Foo Bar</th>},
+    "-auto_pretty_headers works when requested");
 
 
 # Returns a make-believe statement handle, which should behave just like
@@ -118,22 +129,56 @@ sub mocked_sth {
     $mock->set_isa('DBI::st');
 
     # Make it behave as we'd expect:
-    $mock->{NAME} = [ qw(Col1 Col2 Col3 Col4) ];
+    $mock->{NAME} = [ qw(Col1 Col2 Col3 Col4 foo_bar) ];
     
-    $mock->set_series('fetchrow_hashref', 
-        { Col1 => 'R1C1', Col2 => 'R1C2', Col3 => 'R1C3', Col4 => 'R1C4' },
-        { Col1 => 'R2C1', Col2 => 'R2C2', Col3 => 'R2C3', Col4 => 'R2C4' },
-        { Col1 => 'R3C1', Col2 => 'R3C2', Col3 => 'R3C3', Col4 => 'R3C4' },
-        {
-            Col1 => '<p>HTML</p>',
-            Col2 => '<div align="center">R3C2</div>',
-            Col3 => '<script>evilscript</script>',
-            Col4 => 'R3C4',
-        },
-        # This row will be hidden to test row_callbacks callbacks setting the
-        # row hashref to undef:
-        { Col1 => 'Hide', Col2 => 'R5C2', Col3 => 'R5C3', Col4 => 'R5C4' },
-        # And this row will be changed via a row_callback
-        { Col1 => 'R6C1', Col2 => 'R6C2', Col3 => 'R6C3', Col4 => 'Munge' },
+    $mock->set_series(
+	'fetchrow_hashref',
+	{
+	    Col1    => 'R1C1',
+	    Col2    => 'R1C2',
+	    Col3    => 'R1C3',
+	    Col4    => 'R1C4',
+	    foo_bar => 1,
+	},
+	{
+	    Col1    => 'R2C1',
+	    Col2    => 'R2C2',
+	    Col3    => 'R2C3',
+	    Col4    => 'R2C4',
+	    foo_bar => 1,
+	},
+	{
+	    Col1    => 'R3C1',
+	    Col2    => 'R3C2',
+	    Col3    => 'R3C3',
+	    Col4    => 'R3C4',
+	    foo_bar => 1,
+	},
+	{
+	    Col1    => '<p>HTML</p>',
+	    Col2    => '<div align="center">R3C2</div>',
+	    Col3    => '<script>evilscript</script>',
+	    Col4    => 'R3C4',
+	    foo_bar => 1,
+	},
+
+	# This row will be hidden to test row_callbacks callbacks setting the
+	# row hashref to undef:
+	{
+	    Col1    => 'Hide',
+	    Col2    => 'R5C2',
+	    Col3    => 'R5C3',
+	    Col4    => 'R5C4',
+	    foo_bar => 1,
+	},
+
+	# And this row will be changed via a row_callback
+	{
+	    Col1    => 'R6C1',
+	    Col2    => 'R6C2',
+	    Col3    => 'R6C3',
+	    Col4    => 'Munge',
+	    foo_bar => 1,
+	},
     );
 }
