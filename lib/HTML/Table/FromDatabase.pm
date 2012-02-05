@@ -182,7 +182,7 @@ sub new {
         if (exists $rename_headers->{$_}) {
             $_ = $rename_headers->{$_};
         } elsif ($auto_pretty_headers) {
-            $_ = prettify($_);
+            $_ = _prettify($_);
         }
     }
 
@@ -300,7 +300,7 @@ sub _perform_callback {
     return $callback->{transform}->($value, $row);
 }
 
-sub prettify {
+sub _prettify {
     s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
 }
 
