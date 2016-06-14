@@ -8,7 +8,7 @@ perl:
     - "5.10"
 
 install:
-    - DBI HTML::Table --quiet --notest
+    - cpanm DBI HTML::Table --quiet --notest
 
 script:
     - perl Makefile.PL
