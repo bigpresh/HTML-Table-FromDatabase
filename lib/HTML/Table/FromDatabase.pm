@@ -420,10 +420,14 @@ report.
 Thanks to Ireneusz Pluta for reporting bug with -override_headers /
 -rename_headers option and supplying patch in RT ticket #50164.
 
+Thanks to Jared Still (jkstill) for amending the automatic column name
+prettification to lowercase column names first, so Oracle users with their
+uppercase columns can still have nice headings.
+
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008-2011 by David Precious
+Copyright (C) 2008-2016 by David Precious
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.7 or,

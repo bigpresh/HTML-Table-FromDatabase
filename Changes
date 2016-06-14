@@ -1,5 +1,11 @@
 Revision history for HTML-Table-FromDatabase
 
+1.11    2016-06-14
+        Lowercase column names before prettifying them, so that Oracle users get
+        same niceness (e.g. FIRST_NAME => 'First Name', not 'FIRST NAME')
+        - thanks to Jared Still (jkstill) for this in GH PR-1 (hurrah, first
+          pull request :)
+
 1.10    2012-02-05
         New -auto_pretty_headers option, automatically prettifies column names -
         for example, "first_name" => "First Name"
