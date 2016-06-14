@@ -301,7 +301,7 @@ sub _perform_callback {
 }
 
 sub _prettify {
-    s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
+    $_=lc($_); s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
 }
 
 1;
