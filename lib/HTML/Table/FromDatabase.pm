@@ -300,8 +300,9 @@ sub _perform_callback {
     return $callback->{transform}->($value, $row);
 }
 
+# lowercase input first to work on input that is already all uppercase
 sub _prettify {
-    s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
+    $_=lc($_); s{_}{ }g; s{\b(\w)}{\u$1}g; $_;
 }
 
 1;
